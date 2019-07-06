@@ -52,3 +52,27 @@ function getRestsFromPage($page)
 
     return $rests;
 }
+
+function getMaxPage($page)
+{
+    return 2;
+    $pattern = '/\/restaurant\?page=([0-9]+)/u';
+    $subject = file_get_contents('https://restoran.kz/restaurant?page=' . $page);
+    $result = [];
+    preg_match_all($pattern, $subject, $result);
+    
+    $max = $result[1][0];
+    foreach ($result[1] as $digit) {
+        if ($digit > $max) {
+            $max = $digit;
+        }
+    }
+
+    if ($max == $page) {
+        return $page;
+    } else {
+        return getMaxPage($max);
+    }
+}
+
+?>
